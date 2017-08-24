@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2015 Antonio Leiva
   ~
@@ -14,14 +15,10 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="spacing_xsmall">2dp</dimen>
-    <dimen name="spacing_medium">8dp</dimen>
-    <dimen name="spacing_large">16dp</dimen>
-    <dimen name="spacing_xlarge">32dp</dimen>
-
-    <dimen name="elevation_low">9dp</dimen>
-    <dimen name="elevation_high">12dp</dimen>
-    <dimen name="status_bar_height">25dp</dimen>
-</resources>
+<gridLayoutAnimation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:animation="@anim/slide_in_bottom"
+    android:animationOrder="normal"
+    android:columnDelay="15%"
+    android:rowDelay="15%"
+    android:direction="top_to_bottom|left_to_right"/>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) ${YEAR} Antonio Leiva
+ * Copyright (C) 2015 Antonio Leiva
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.antonioleiva.materializeyourapp;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -28,9 +29,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.antonioleiva.materializeyourapp.picasso.CircleTransform;
 import com.squareup.picasso.Picasso;
@@ -41,7 +40,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClickListener {
 
-    public static final String AVATAR_URL = "http://lorempixel.com/200/200/people/9/";
+    public static final String AVATAR_URL = "http://lorempixel.com/200/200/people/1/";
 
     private static List<ViewModel> items = new ArrayList<>();
 
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private DrawerLayout drawerLayout;
     private View content;
     private RecyclerView recyclerView;
-    private ImageButton fab;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,24 +67,36 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         content = findViewById(R.id.content);
 
-        final ImageView avatar = (ImageView) findViewById(R.id.avatar);
+        final ImageView avatar = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.avatar);
         Picasso.with(this).load(AVATAR_URL).transform(new CircleTransform()).into(avatar);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            setRecyclerAdapter(recyclerView);
+        }
+    }
+
+    @Override public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        setRecyclerAdapter(recyclerView);
+        recyclerView.scheduleLayoutAnimation();
     }
 
     private void initRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+    }
+
+    private void setRecyclerAdapter(RecyclerView recyclerView) {
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(items);
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
     }
 
     private void initFab() {
-        fab = (ImageButton) findViewById(R.id.fab);
-
-        fab.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Hello", Toast.LENGTH_SHORT).show();
+                Snackbar.make(content, "FAB Clicked", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -99,24 +110,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        // Toolbar height needs to be known before establishing the initial offset
-        toolbar.post(new Runnable() {
-            @Override public void run() {
-                ScrollManager manager = new ScrollManager();
-                manager.attach(recyclerView);
-                manager.addView(toolbar, ScrollManager.Direction.UP);
-                manager.addView(fab, ScrollManager.Direction.DOWN);
-                manager.setInitialOffset(toolbar.getHeight());
-            }
-        });
     }
 
     private void setupDrawerLayout() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        NavigationView view = (NavigationView) findViewById(R.id.navigation_view);
-        view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override public boolean onNavigationItemSelected(MenuItem menuItem) {
                 Snackbar.make(content, menuItem.getTitle() + " pressed", Snackbar.LENGTH_LONG).show();
                 menuItem.setChecked(true);

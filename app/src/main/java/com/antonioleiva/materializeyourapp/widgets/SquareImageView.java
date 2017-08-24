@@ -1,5 +1,5 @@
 /*
- * Copyright (C) ${YEAR} Antonio Leiva
+ * Copyright (C) 2015 Antonio Leiva
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.antonioleiva.materializeyourapp;
+package com.antonioleiva.materializeyourapp.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
